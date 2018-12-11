@@ -1,0 +1,57 @@
+package com.dingtao.logindemo.core;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
+import com.dingtao.logindemo.bean.Result;
+import com.dingtao.logindemo.model.LoginModel;
+
+/**
+ * @author dingtao
+ * @date 2018/12/6 14:57
+ * qq:1940870847
+ */
+public abstract class BasePresenter {
+
+    public BasePresenter(DataCall dataCall){
+        this.dataCall = dataCall;
+    }
+
+
+    Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+
+            Result result = (Result) msg.obj;
+            if (result.getCode()==0){
+                dataCall.success(result.getData());
+            }else{
+                dataCall.fail(result);
+            }
+        }
+    };
+
+    DataCall dataCall;
+
+    public void requestData(final String...args){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                Message message = mHandler.obtainMessage();
+                message.obj = getData(args);
+                mHandler.sendMessage(message);
+
+            }
+        }).start();
+    }
+
+    protected abstract Result getData(String...args);
+
+    public void unBindCall(){
+        this.dataCall = null;
+    }
+
+}
