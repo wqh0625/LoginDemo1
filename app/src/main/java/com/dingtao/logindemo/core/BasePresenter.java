@@ -14,6 +14,8 @@ import com.dingtao.logindemo.model.LoginModel;
  */
 public abstract class BasePresenter {
 
+    DataCall dataCall;
+
     public BasePresenter(DataCall dataCall){
         this.dataCall = dataCall;
     }
@@ -32,7 +34,7 @@ public abstract class BasePresenter {
         }
     };
 
-    DataCall dataCall;
+
 
     public void requestData(final String...args){
         new Thread(new Runnable() {
